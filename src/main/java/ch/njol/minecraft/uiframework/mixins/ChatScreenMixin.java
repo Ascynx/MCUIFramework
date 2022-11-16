@@ -57,7 +57,7 @@ public abstract class ChatScreenMixin extends Screen {
 	@Redirect(method = "render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;getText(DD)Lnet/minecraft/text/Style;"))
 	public Style render(ChatHud instance, double x, double y, MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		Style style = instance.getText(x, y);
+		Style style = instance.getTextStyleAt(x, y);
 		if (style != null && style.getHoverEvent() != null) {
 			return style;
 		}

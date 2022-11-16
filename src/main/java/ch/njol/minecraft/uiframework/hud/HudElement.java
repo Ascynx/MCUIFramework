@@ -119,8 +119,7 @@ public abstract class HudElement {
 		bufferBuilder.vertex(matrices, x1, y1, z).texture(u1, v1).next();
 		bufferBuilder.vertex(matrices, x1, y0, z).texture(u1, v0).next();
 		bufferBuilder.vertex(matrices, x0, y0, z).texture(u0, v0).next();
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
+		BufferRenderer.drawWithShader(bufferBuilder.end());
 	}
 
 	public static void drawSprite(MatrixStack matrices, Sprite sprite, float x, float y, float width, float height) {
