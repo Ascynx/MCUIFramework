@@ -1,13 +1,13 @@
 package ch.njol.minecraft.uiframework.mixins;
 
 import ch.njol.minecraft.uiframework.hud.Hud;
-import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,6 +20,9 @@ public abstract class ChatScreenMixin extends Screen {
 
 	@Unique
 	private final Hud hud = Hud.INSTANCE;
+
+	@Shadow
+	protected abstract Style getTextStyleAt(double x, double y);
 
 	protected ChatScreenMixin(Text title) {
 		super(title);
@@ -55,10 +58,13 @@ public abstract class ChatScreenMixin extends Screen {
 	}
 
 	@Redirect(method = "render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;getText(DD)Lnet/minecraft/text/Style;"))
-	public Style render(ChatHud instance, double x, double y, MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		Style style = instance.getTextStyleAt(x, y);
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;getTextStyleAt(DD)Lnet/minecraft/text/Style;"))
+	public Style render(ChatScreen instance, double x, double y, MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		Style style = this.getTextStyleAt(x, y);
 		if (style != null && style.getHoverEvent() != null) {
+			return style;
+		}
+		if (client != null && client.inGameHud.getChatHud().getIndicatorAt(mouseX, mouseY) != null) {
 			return style;
 		}
 		hud.renderTooltip(this, matrices, mouseX, mouseY);
