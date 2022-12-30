@@ -73,14 +73,6 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
-        maven {
-            name = "GithubPackages"
-            url = "https://maven.pkg.github.com/Ascynx/MCUIFramework"
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
         // uncomment to publish to the local maven
         mavenLocal()
     }
