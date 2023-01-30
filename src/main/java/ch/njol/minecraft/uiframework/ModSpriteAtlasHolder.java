@@ -20,12 +20,11 @@ public class ModSpriteAtlasHolder extends SpriteAtlasHolder {
 	private final List<Identifier> sprites = new ArrayList<>();
 
 	private ModSpriteAtlasHolder(TextureManager textureManager, String namespace, String atlasName) {
-		super(textureManager, new Identifier(namespace, "textures/" + atlasName + "/atlas.png"), atlasName);
+		super(textureManager, new Identifier(namespace, "textures/" + atlasName + "/atlas.png"), new Identifier(atlasName));
 		this.namespace = namespace;
 		this.atlasName = atlasName;
 	}
 
-	@Override
 	protected Stream<Identifier> getSprites() {
 		return sprites.stream();
 	}
