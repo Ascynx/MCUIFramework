@@ -14,9 +14,9 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joml.Matrix4f;
 
 public abstract class HudElement {
 
@@ -35,7 +35,7 @@ public abstract class HudElement {
 		Rectangle dimension = getDimension();
 		matrices.push();
 		matrices.translate(dimension.x, dimension.y, getZOffset());
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -112,18 +112,18 @@ public abstract class HudElement {
 	}
 
 	public static void drawTexturedQuadSmooth(Matrix4f matrices, float x0, float y0, float x1, float y1, float z, float u0, float v0, float u1, float v1) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 		bufferBuilder.vertex(matrices, x0, y1, z).texture(u0, v1).next();
 		bufferBuilder.vertex(matrices, x1, y1, z).texture(u1, v1).next();
 		bufferBuilder.vertex(matrices, x1, y0, z).texture(u1, v0).next();
 		bufferBuilder.vertex(matrices, x0, y0, z).texture(u0, v0).next();
-		BufferRenderer.drawWithShader(bufferBuilder.end());
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 	}
 
 	public static void drawSprite(MatrixStack matrices, Sprite sprite, float x, float y, float width, float height) {
-		RenderSystem.setShaderTexture(0, sprite.getAtlas().getId());
+		RenderSystem.setShaderTexture(0, sprite.getAtlasId());
 		drawTexturedQuadSmooth(matrices.peek().getPositionMatrix(), x, y, x + width, y + height, 0, sprite.getMinU(), sprite.getMinV(), sprite.getMaxU(), sprite.getMaxV());
 	}
 
@@ -135,7 +135,7 @@ public abstract class HudElement {
 		if (cutX0 >= cutX1 || cutY0 >= cutX1 || width == 0 || height == 0) {
 			return;
 		}
-		RenderSystem.setShaderTexture(0, sprite.getAtlas().getId());
+		RenderSystem.setShaderTexture(0, sprite.getAtlasId());
 		drawTexturedQuadSmooth(matrices.peek().getPositionMatrix(), x + width * cutX0, y + height * cutY0, x + width * cutX1, y + height * cutY1, 0,
 			sprite.getMinU() + cutX0 * (sprite.getMaxU() - sprite.getMinU()), sprite.getMinV() + cutY0 * (sprite.getMaxV() - sprite.getMinV()),
 			sprite.getMinU() + cutX1 * (sprite.getMaxU() - sprite.getMinU()), sprite.getMinV() + cutY1 * (sprite.getMaxV() - sprite.getMinV()));
@@ -146,7 +146,7 @@ public abstract class HudElement {
 		if (xRepetitions * yRepetitions > 1000) {
 			throw new IllegalArgumentException("Too many sprite repetitions requested! (" + xRepetitions + ", " + yRepetitions + ")");
 		}
-		RenderSystem.setShaderTexture(0, sprite.getAtlas().getId());
+		RenderSystem.setShaderTexture(0, sprite.getAtlasId());
 		for (int xrep = 0; xrep < xRepetitions; xrep++) {
 			for (int yrep = 0; yrep < yRepetitions; yrep++) {
 				float xfactor = Math.min(1.0f, xRepetitions - xrep);
@@ -174,8 +174,8 @@ public abstract class HudElement {
 	}
 
 	protected boolean isPixelTransparent(Sprite sprite, double relativeX, double relativeY) {
-		return sprite.isPixelTransparent(0, Utils.clamp(0, (int) (relativeX * sprite.getWidth()), sprite.getWidth() - 1),
-			Utils.clamp(0, (int) (relativeY * sprite.getHeight()), sprite.getHeight() - 1));
+		return sprite.getContents().isPixelTransparent(0, Utils.clamp(0, (int) (relativeX * sprite.getContents().getWidth()), sprite.getContents().getWidth() - 1),
+			Utils.clamp(0, (int) (relativeY * sprite.getContents().getHeight()), sprite.getContents().getHeight() - 1));
 	}
 
 	/**
