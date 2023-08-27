@@ -2,6 +2,7 @@ package ch.njol.minecraft.uiframework.hud;
 
 import ch.njol.minecraft.uiframework.UIFrameworkMod;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -43,7 +44,8 @@ public class HudEditScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+	public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+		MatrixStack matrices = drawContext.getMatrices();
 		assert client != null;
 
 		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
@@ -52,7 +54,7 @@ public class HudEditScreen extends Screen {
 		RenderSystem.defaultBlendFunc();
 		matrices.push();
 		matrices.translate(0, 0, 100);
-		client.textRenderer.drawWithShadow(matrices, "Rearrange elements by dragging them around with the mouse. ESC to close.", 5, 5, 0xffffffff);
+		drawContext.drawTextWithShadow(client.textRenderer, "Rearrange elements by dragging them around with the mouse. ESC to close.", 5, 5, 0xffffffff);
 		matrices.pop();
 	}
 

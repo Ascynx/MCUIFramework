@@ -1,6 +1,7 @@
 package ch.njol.minecraft.uiframework.mixins;
 
 import ch.njol.minecraft.uiframework.hud.Hud;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -57,9 +58,9 @@ public abstract class ChatScreenMixin extends Screen {
 		hud.removed();
 	}
 
-	@Redirect(method = "render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V",
+	@Redirect(method = "render",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ChatScreen;getTextStyleAt(DD)Lnet/minecraft/text/Style;"))
-	public Style render(ChatScreen instance, double x, double y, MatrixStack matrices, int mouseX, int mouseY, float delta) {
+	public Style render(ChatScreen instance, double x, double y, DrawContext context, int mouseX, int mouseY, float delta) {
 		Style style = this.getTextStyleAt(x, y);
 		if (style != null && style.getHoverEvent() != null) {
 			return style;
@@ -67,7 +68,7 @@ public abstract class ChatScreenMixin extends Screen {
 		if (client != null && client.inGameHud.getChatHud().getIndicatorAt(mouseX, mouseY) != null) {
 			return style;
 		}
-		hud.renderTooltip(this, matrices, mouseX, mouseY);
+		hud.renderTooltip(this, context, mouseX, mouseY);
 		return style;
 	}
 
