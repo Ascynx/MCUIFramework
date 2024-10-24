@@ -22,7 +22,7 @@ public class ModSpriteAtlasHolder extends SpriteAtlasHolder {
 	//It is also required to create a json file in your assets folder under /atlases (the name needs to correspond to the atlasName)
 	//see the format on the wiki
 	private ModSpriteAtlasHolder(TextureManager textureManager, String namespace, String atlasName) {
-		super(textureManager, new Identifier(namespace, "textures/" + atlasName + "/atlas.png"), new Identifier(namespace, atlasName));
+		super(textureManager, Identifier.of(namespace, "textures/" + atlasName + "/atlas.png"), Identifier.of(namespace, atlasName));
 		this.namespace = namespace;
 		this.atlasName = atlasName;
 	}
@@ -58,7 +58,7 @@ public class ModSpriteAtlasHolder extends SpriteAtlasHolder {
 	 * @return The sprite's identifier in this atlas to use with {@link #getSprite(Identifier)}
 	 */
 	public Identifier registerSprite(String path) {
-		Identifier id = new Identifier(namespace, path);
+		Identifier id = Identifier.of(namespace, path);
 		sprites.add(id);
 		return id;
 	}

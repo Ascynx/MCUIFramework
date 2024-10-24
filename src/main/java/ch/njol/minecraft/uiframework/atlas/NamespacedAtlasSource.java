@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import static ch.njol.minecraft.uiframework.UIFrameworkMod.NAMESPACED;
 
 public class NamespacedAtlasSource implements AtlasSource {
-    public static final Codec<NamespacedAtlasSource> CODEC = RecordCodecBuilder.create(instance -> instance.group(((MapCodec)Codec.STRING.fieldOf("source")).forGetter(directoryAtlasSource -> ((NamespacedAtlasSourceImp) directoryAtlasSource).source), ((MapCodec)Codec.STRING.fieldOf("prefix")).forGetter(directoryAtlasSource -> ((NamespacedAtlasSourceImp) directoryAtlasSource).prefix), ((MapCodec)Codec.STRING.fieldOf("namespace")).forGetter(directoryAtlasSource -> ((NamespacedAtlasSourceImp) directoryAtlasSource).namespace)).apply(instance, ((o1, o2, o3) -> new NamespacedAtlasSource((String) o1, (String) o2, (String) o3))));
+    public static final MapCodec<NamespacedAtlasSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(((MapCodec)Codec.STRING.fieldOf("source")).forGetter(directoryAtlasSource -> ((NamespacedAtlasSourceImp) directoryAtlasSource).source), ((MapCodec)Codec.STRING.fieldOf("prefix")).forGetter(directoryAtlasSource -> ((NamespacedAtlasSourceImp) directoryAtlasSource).prefix), ((MapCodec)Codec.STRING.fieldOf("namespace")).forGetter(directoryAtlasSource -> ((NamespacedAtlasSourceImp) directoryAtlasSource).namespace)).apply(instance, ((o1, o2, o3) -> new NamespacedAtlasSource((String) o1, (String) o2, (String) o3))));
 
     private final String namespace;
     private final String source;
