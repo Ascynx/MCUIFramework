@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -29,7 +30,7 @@ public abstract class HudElement {
 		client = MinecraftClient.getInstance();
 	}
 
-	public void renderAbsolute(DrawContext drawContext, float tickDelta) {
+	public void renderAbsolute(DrawContext drawContext, RenderTickCounter tickCounter) {
 		if (!isEnabled() || (!isVisible() && !isInEditMode())) {
 			return;
 		}
@@ -43,7 +44,7 @@ public abstract class HudElement {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		try {
-			render(drawContext, tickDelta);
+			render(drawContext, tickCounter);
 		} catch (Exception e) {
 			LOGGER.error("Error rendering " + getClass().getCanonicalName(), e);
 		} finally {
@@ -87,7 +88,7 @@ public abstract class HudElement {
 
 	protected abstract int getZOffset();
 
-	protected abstract void render(DrawContext drawContext, float tickDelta);
+	protected abstract void render(DrawContext drawContext, RenderTickCounter tickCounter);
 
 	// helper methods
 
